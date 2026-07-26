@@ -56,15 +56,16 @@
     "icon": "icons/brand/fukulist.png",
     "subs": 0,
     "videos": 0,
-    "reserved": 0,
+    "reserved": 1,
     "target": 4,
-    "nextPub": "",
-    "scheduled": "",
+    "nextPub": "07-30 목 21:00",
+    "scheduled": "OWL LIFE #01 深夜作業用BGM(07-30 목)",
     "url": "https://app.notion.com/p/38a748204dbd8137bf57ef4e49e7b9b7",
     "next": [
-      "첫 콘텐츠 컨셉 기획(jpop-lyricist) · 슬롯 목 21:00",
-      "전화 인증 + 숙성 활동 이틀+ 선행"
-    ]
+      "전화 인증(youtube.com/verify) → 썸네일 1.jpg 재등록(403 해소)",
+      "리믹스 허용안함·핀 댓글(Studio 수동) · 02 컨셉 착수"
+    ],
+    "start": "2026-07-30"
   },
   {
     "name": "PENGLIST",
