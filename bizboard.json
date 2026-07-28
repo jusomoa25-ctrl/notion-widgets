@@ -87,7 +87,7 @@
     "name": "스타너츠",
     "icon": "icons/brand/starnauts.png",
     "stage": "플랫폼 개발",
-    "done": "채널 딥 리서치 상향 — 채널 가치·성장 벤치마크 카드(SB식 등급·Nox식 5축·수익 추정)",
+    "done": "Gemini 키 이름 starnauts_key_gemini로 통일 + 구 키(starnauts_gem_key) 1회 자동 이관 — 도구별 \"다시 연결\" 원인 제거",
     "url": "https://app.notion.com/p/37c748204dbd81a7ba36ed0b3cbbd063",
     "report": "direction-2026-07-10 (2026-07-10)",
     "next": [
@@ -115,13 +115,13 @@
     "name": "Playstars List",
     "icon": "icons/brand/playstars.png",
     "stage": "플리 채널 운영 (GEKOLIST 등)",
-    "done": "WHALE 03 (Restful Night) 업로드·예약 — 08-05 수 22:00 (kRMktmVRd4s) + 타임스탬프 정본",
+    "done": "GEKOLIST 03 (AIRPLANE LO-FI) 34곡 CapCut 편집 완료 (총 1:47:42)",
     "url": "https://app.notion.com/p/38a748204dbd81ca82ebc63200d18608",
     "report": "direction-2026-07-10 (2026-07-10)",
     "next": [
-      "웨일 04 Music Box Sky 제작 착수(예약 2/4)",
-      "푸쿠 02 소재 다변화 컨셉 확정",
-      "펭 01 첫 콘텐츠(인증·숙성 선행)"
+      "채널 현황 DB에서 3채널 성과 베이스라인 기록",
+      "썸네일·첫30초 훅 표준을 편집 규칙에 반영",
+      "GEKOLIST Shorts 퍼널 파일럿 (주 2~3편)"
     ],
     "reportUrl": "https://app.notion.com/p/399748204dbd8148b941e2614b4d95b4"
   },
