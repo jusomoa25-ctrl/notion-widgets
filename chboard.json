@@ -2,8 +2,8 @@
   {
     "name": "GEKOLIST",
     "icon": "icons/brand/gekolist.png",
-    "subs": 2190,
-    "videos": 3,
+    "subs": 2400,
+    "videos": 4,
     "reserved": 3,
     "target": 4,
     "nextPub": "07-31 금 21:00",
@@ -20,7 +20,7 @@
   {
     "name": "SLEEPYTEDDYLIST",
     "icon": "icons/brand/sleepyteddy.png",
-    "subs": 158,
+    "subs": 233,
     "videos": 2,
     "reserved": 3,
     "target": 4,
@@ -38,7 +38,7 @@
     "name": "WHALELIST",
     "icon": "icons/brand/whalelist.png",
     "subs": 0,
-    "videos": 1,
+    "videos": 2,
     "reserved": 2,
     "target": 4,
     "nextPub": "07-29 수 22:00",
