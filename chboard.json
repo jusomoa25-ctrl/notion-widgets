@@ -58,14 +58,15 @@
     "videos": 0,
     "reserved": 1,
     "target": 4,
-    "nextPub": "07-30 목 21:00",
-    "scheduled": "OWL LIFE(07-30 목)",
+    "nextPub": "08-06 목 21:00",
+    "scheduled": "OWL LIFE(08-06 목)",
     "url": "https://app.notion.com/p/38a748204dbd8137bf57ef4e49e7b9b7",
     "next": [
+      "첫 발행 08-06으로 연기(일본 지진 뉴스 배려)",
       "전화 인증(youtube.com/verify) → 썸네일 1.jpg 재등록(403 해소)",
       "리믹스 허용안함·핀 댓글(Studio 수동) · 02 컨셉 착수"
     ],
-    "start": "2026-07-30"
+    "start": "2026-08-06"
   },
   {
     "name": "PENGLIST",
