@@ -32,11 +32,14 @@
     document.getElementById("title").textContent = (c && c.name || CH || "?") + " 구독자 변동";
     if (!c) { document.getElementById("empty").hidden = false; return; }
     var mmdd = function(d){ return d.slice(5).replace("-","/"); };
-    document.getElementById("upd").textContent = "~" + mmdd(data.dataThrough) + " · YouTube 집계는 최근 약 2일 지연";
+    var hasProv = data.provThrough && data.provThrough > data.dataThrough;
+    document.getElementById("upd").textContent = hasProv
+      ? "확정 ~" + mmdd(data.dataThrough) + " · ~" + mmdd(data.provThrough) + " 잠정(자정 스냅샷)"
+      : "~" + mmdd(data.dataThrough) + " · YouTube 집계는 최근 약 2일 지연";
     if (c.history) { var a = document.getElementById("hist"); a.href = c.history; a.hidden = false; }
 
     // days: [date, gained, lost] → net change per day
-    var days = c.days.map(function(x){ return { d: x[0], g: x[1] - (x[2]||0) }; });
+    var days = c.days.map(function(x){ return { d: x[0], g: x[1] - (x[2]||0), p: !!x[3] }; });
     var first = days.findIndex(function(x){ return x.g !== 0; });
     if (first < 0) {
       document.getElementById("empty").hidden = false;
@@ -76,7 +79,7 @@
       var bx = padL + i * step + (step - bw) / 2;
       var by = padT + ch - h;
       var r = Math.min(4, bw / 2, h);
-      s += "<path d='M"+bx+" "+(padT+ch)+" V"+(by+r)+" Q"+bx+" "+by+" "+(bx+r)+" "+by+" H"+(bx+bw-r)+" Q"+(bx+bw)+" "+by+" "+(bx+bw)+" "+(by+r)+" V"+(padT+ch)+" Z' fill='var(--bar)'/>";
+      s += "<path d='M"+bx+" "+(padT+ch)+" V"+(by+r)+" Q"+bx+" "+by+" "+(bx+r)+" "+by+" H"+(bx+bw-r)+" Q"+(bx+bw)+" "+by+" "+(bx+bw)+" "+(by+r)+" V"+(padT+ch)+" Z' fill='var(--bar)'"+(x.p?" fill-opacity='0.5'":"")+"/>";
       var cx = bx + bw / 2;
       var w = (i === pi) ? 800 : 400;
       var fill = (i === pi) ? "var(--fg)" : "var(--sub)";
