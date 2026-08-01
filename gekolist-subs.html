@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GEKOLIST 구독자 변동</title>
+<style>
+  :root { --bg:#ffffff; --fg:#1f1f1f; --sub:#787774; --line:#e8e6e3; --bar:#2e7cd6; --grid:#f0efec; }
+  @media (prefers-color-scheme: dark){ :root{ --bg:#191919; --fg:#ececec; --sub:#9b9b9b; --line:#333; --bar:#5a9fe2; --grid:#242424; } }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:var(--bg);color:var(--fg);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Malgun Gothic",sans-serif;padding:10px 12px;max-width:860px;margin:0 auto}
+  .head{display:flex;justify-content:space-between;align-items:baseline;margin:0 2px 8px}
+  .head .t{font-size:12px;letter-spacing:2px;color:var(--sub);font-weight:700}
+  .head .u{font-size:10px;color:var(--sub)}
+  .stats{display:flex;gap:18px;margin:0 2px 10px}
+  .st b{display:block;font-size:20px;font-weight:800;font-variant-numeric:tabular-nums;line-height:1.1}
+  .st span{font-size:10.5px;color:var(--sub)}
+  .wrap{position:relative}
+  svg{display:block;width:100%}
+  .tip{position:absolute;pointer-events:none;background:var(--fg);color:var(--bg);font-size:11px;padding:4px 8px;border-radius:6px;white-space:nowrap;transform:translate(-50%,-110%);opacity:0;transition:opacity .1s;font-variant-numeric:tabular-nums}
+</style>
+</head>
+<body>
+  <div class="head"><div class="t">GEKOLIST 구독자 변동</div><div class="u" id="upd">-</div></div>
+  <div class="stats" id="stats"></div>
+  <div class="wrap"><svg id="chart"></svg><div class="tip" id="tip"></div></div>
+<script>
+  fetch("gekolist-subs.json?v="+Date.now()).then(r=>r.json()).then(function(data){
+    var days = data.days, n = days.length;
+    var total = days.reduce(function(s,x){return s+x.g},0);
+    var last = days[n-1], peak = days.reduce(function(a,b){return b.g>a.g?b:a});
+    document.getElementById("upd").textContent = "~" + data.dataThrough.slice(5).replace("-","/") + " (집계 지연 1~2일)";
+    document.getElementById("stats").innerHTML =
+      "<div class='st'><b>+"+total.toLocaleString()+"</b><span>누적 증가</span></div>"+
+      "<div class='st'><b>+"+last.g+"</b><span>"+last.d.slice(5).replace("-","/")+"</span></div>"+
+      "<div class='st'><b>+"+peak.g+"</b><span>최고 ("+peak.d.slice(5).replace("-","/")+")</span></div>";
+
+    var W = 640, H = 190, padL = 6, padR = 6, padT = 8, padB = 18;
+    var cw = W - padL - padR, ch = H - padT - padB;
+    var max = peak.g, step = cw / n, bw = Math.max(2, step - 2);
+    var svg = document.getElementById("chart");
+    svg.setAttribute("viewBox", "0 0 " + W + " " + H);
+
+    var s = "";
+    // recessive gridlines at 0 / half / max
+    [0, .5, 1].forEach(function(f){
+      var y = padT + ch * (1 - f);
+      s += "<line x1='"+padL+"' y1='"+y+"' x2='"+(W-padR)+"' y2='"+y+"' stroke='var(--grid)' stroke-width='1'/>";
+      if (f > 0) s += "<text x='"+(W-padR)+"' y='"+(y-3)+"' text-anchor='end' font-size='9' fill='var(--sub)'>"+Math.round(max*f)+"</text>";
+    });
+    days.forEach(function(x, i){
+      var h = max ? Math.round(x.g / max * ch) : 0;
+      var bx = padL + i * step + (step - bw) / 2;
+      var by = padT + ch - h;
+      var r = Math.min(4, bw / 2, h);
+      s += "<path data-i='"+i+"' d='M"+bx+" "+(padT+ch)+" V"+(by+r)+" Q"+bx+" "+by+" "+(bx+r)+" "+by+" H"+(bx+bw-r)+" Q"+(bx+bw)+" "+by+" "+(bx+bw)+" "+(by+r)+" V"+(padT+ch)+" Z' fill='var(--bar)'/>";
+      // sparse x ticks: first, peak, last + every Monday-ish 7th
+      if (i === 0 || i === n-1 || i % 7 === 0) {
+        s += "<text x='"+(bx+bw/2)+"' y='"+(H-4)+"' text-anchor='middle' font-size='9' fill='var(--sub)'>"+x.d.slice(5).replace("-","/")+"</text>";
+      }
+    });
+    // direct label on peak only
+    var pi = days.indexOf(peak);
+    var px = padL + pi * step + step / 2;
+    var py = padT + ch - Math.round(peak.g / max * ch);
+    s += "<text x='"+px+"' y='"+(py-4)+"' text-anchor='middle' font-size='10' font-weight='700' fill='var(--fg)'>"+peak.g+"</text>";
+    svg.innerHTML = s;
+
+    var tip = document.getElementById("tip"), wrap = svg.parentNode;
+    svg.addEventListener("mousemove", function(e){
+      var rect = svg.getBoundingClientRect();
+      var i = Math.floor((e.clientX - rect.left) / rect.width * n);
+      if (i < 0 || i >= n) { tip.style.opacity = 0; return; }
+      var x = days[i];
+      tip.textContent = x.d.slice(5).replace("-","/") + "  +" + x.g;
+      tip.style.left = ((i + .5) / n * rect.width) + "px";
+      tip.style.top = (rect.top - wrap.getBoundingClientRect().top + 14) + "px";
+      tip.style.opacity = 1;
+    });
+    svg.addEventListener("mouseleave", function(){ tip.style.opacity = 0; });
+  });
+</script>
+</body>
+</html>
