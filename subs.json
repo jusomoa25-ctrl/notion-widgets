@@ -1,12 +1,18 @@
 {
   "updated": "2026-08-01",
   "dataThrough": "2026-07-29",
+  "provThrough": "2026-07-31",
   "channels": {
     "GEKOLIST": {
       "name": "GEKOLIST",
       "subs": 2620,
       "history": "https://app.notion.com/p/GEKOLIST-3af748204dbd8126b28ef07149034f92",
       "historyId": "3af748204dbd8126b28ef07149034f92",
+      "snaps": {
+        "2026-07-30": 2400,
+        "2026-07-31": 2570,
+        "2026-08-01": 2620
+      },
       "days": [
         [
           "2026-07-03",
@@ -142,14 +148,31 @@
           "2026-07-29",
           217,
           24
+        ],
+        [
+          "2026-07-30",
+          170,
+          0,
+          1
+        ],
+        [
+          "2026-07-31",
+          50,
+          0,
+          1
         ]
       ]
     },
     "SLEEPYTEDDYLIST": {
       "name": "SLEEPYTEDDYLIST",
-      "subs": 518,
+      "subs": 519,
       "history": "https://app.notion.com/p/SLEEPYTEDDYLIST-3af748204dbd81c9ba71e848c1421acf",
       "historyId": "3af748204dbd81c9ba71e848c1421acf",
+      "snaps": {
+        "2026-07-30": 233,
+        "2026-07-31": 342,
+        "2026-08-01": 460
+      },
       "days": [
         [
           "2026-07-12",
@@ -240,6 +263,18 @@
           "2026-07-29",
           102,
           7
+        ],
+        [
+          "2026-07-30",
+          109,
+          0,
+          1
+        ],
+        [
+          "2026-07-31",
+          118,
+          0,
+          1
         ]
       ]
     },
@@ -248,6 +283,11 @@
       "subs": 0,
       "history": "https://app.notion.com/p/WHALELIST-3af748204dbd81548689de12e6b0ecd5",
       "historyId": "3af748204dbd81548689de12e6b0ecd5",
+      "snaps": {
+        "2026-07-30": 0,
+        "2026-07-31": 0,
+        "2026-08-01": 0
+      },
       "days": []
     },
     "FUKULIST": {
@@ -255,6 +295,11 @@
       "subs": 0,
       "history": "https://app.notion.com/p/FUKULIST-3af748204dbd810382cacafc8db857ce",
       "historyId": "3af748204dbd810382cacafc8db857ce",
+      "snaps": {
+        "2026-07-30": 0,
+        "2026-07-31": 0,
+        "2026-08-01": 0
+      },
       "days": []
     },
     "PENGLIST": {
@@ -262,6 +307,11 @@
       "subs": 0,
       "history": "https://app.notion.com/p/PENGLIST-3af748204dbd812ab14ffefcbe02fd53",
       "historyId": "3af748204dbd812ab14ffefcbe02fd53",
+      "snaps": {
+        "2026-07-30": 0,
+        "2026-07-31": 0,
+        "2026-08-01": 0
+      },
       "days": []
     },
     "URBANBASELIST": {
@@ -269,6 +319,9 @@
       "subs": 0,
       "history": "https://app.notion.com/p/URBAN-BASE-3af748204dbd81b7a997cfd855194e59",
       "historyId": "3af748204dbd81b7a997cfd855194e59",
+      "snaps": {
+        "2026-08-01": 0
+      },
       "days": []
     },
     "BANGKOK": {
@@ -276,6 +329,9 @@
       "subs": 0,
       "history": "https://app.notion.com/p/Bangkok-Playlist-3af748204dbd818a9d72ea66c272e5f2",
       "historyId": "3af748204dbd818a9d72ea66c272e5f2",
+      "snaps": {
+        "2026-08-01": 0
+      },
       "days": []
     },
     "LAZE": {
@@ -283,6 +339,11 @@
       "subs": 7,
       "history": "https://app.notion.com/p/LAZE-3af748204dbd8125b56ac4b8329cc7f6",
       "historyId": "3af748204dbd8125b56ac4b8329cc7f6",
+      "snaps": {
+        "2026-07-30": 7,
+        "2026-07-31": 7,
+        "2026-08-01": 7
+      },
       "days": [
         [
           "2026-07-10",
@@ -383,6 +444,18 @@
           "2026-07-29",
           0,
           0
+        ],
+        [
+          "2026-07-30",
+          0,
+          0,
+          1
+        ],
+        [
+          "2026-07-31",
+          0,
+          0,
+          1
         ]
       ]
     }
