@@ -21,7 +21,7 @@
 </style>
 </head>
 <body>
-  <div class="head"><div class="t" id="title">구독자 변동</div><div class="u" id="upd"></div></div>
+  <div class="head"><div class="t" id="title">구독자 변동</div><div class="u"><a id="hist" href="#" target="_blank" rel="noopener" hidden style="color:inherit;margin-right:8px">전체 기록 →</a><span id="upd"></span></div></div>
   <div class="stats" id="stats" hidden></div>
   <svg id="chart"></svg>
   <div class="empty" id="empty" hidden>집계된 구독자 변동이 아직 없습니다</div>
@@ -33,6 +33,7 @@
     if (!c) { document.getElementById("empty").hidden = false; return; }
     var mmdd = function(d){ return d.slice(5).replace("-","/"); };
     document.getElementById("upd").textContent = "~" + mmdd(data.dataThrough) + " · YouTube 집계는 최근 약 2일 지연";
+    if (c.history) { var a = document.getElementById("hist"); a.href = c.history; a.hidden = false; }
 
     // days: [date, gained, lost] → net change per day
     var days = c.days.map(function(x){ return { d: x[0], g: x[1] - (x[2]||0) }; });
@@ -45,16 +46,16 @@
       }
       return;
     }
-    days = days.slice(Math.max(0, first - 1));
+    var total = days.reduce(function(s,x){ return s + x.g; }, 0); // 누적은 전체 이력 기준
+    days = days.slice(Math.max(0, first - 1)).slice(-30); // 위젯 노출은 최근 30일, 전체 이력은 기록 페이지
 
     var n = days.length;
-    var total = days.reduce(function(s,x){ return s + x.g; }, 0);
     var last = days[n-1], peak = days.reduce(function(a,b){ return b.g > a.g ? b : a; });
     var pi = days.indexOf(peak);
     document.getElementById("stats").hidden = false;
     document.getElementById("stats").innerHTML =
       "<div class='st'><b>"+c.subs.toLocaleString()+"</b><span>현재 구독자</span></div>"+
-      "<div class='st'><b>+"+total.toLocaleString()+"</b><span>기간 순증</span></div>"+
+      "<div class='st'><b>+"+total.toLocaleString()+"</b><span>누적 순증</span></div>"+
       "<div class='st'><b>+"+last.g.toLocaleString()+"</b><span>최근일 ("+mmdd(last.d)+")</span></div>";
 
     // ponytail: viewBox width grows with day count so every day keeps a readable label; revisit past ~60 days
