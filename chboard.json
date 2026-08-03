@@ -2,7 +2,7 @@
   {
     "name": "GEKOLIST",
     "icon": "icons/brand/gekolist.png",
-    "subs": 2950,
+    "subs": 3070,
     "videos": 5,
     "reserved": 3,
     "target": 4,
@@ -19,7 +19,7 @@
   {
     "name": "SLEEPYTEDDYLIST",
     "icon": "icons/brand/sleepyteddy.png",
-    "subs": 625,
+    "subs": 640,
     "videos": 4,
     "reserved": 2,
     "target": 4,
