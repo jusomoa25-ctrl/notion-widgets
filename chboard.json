@@ -38,10 +38,10 @@
     "icon": "icons/brand/whalelist.png",
     "subs": 0,
     "videos": 3,
-    "reserved": 1,
+    "reserved": 0,
     "target": 4,
-    "nextPub": "08-05 수 22:00",
-    "scheduled": "Restful Night(08-05 수)",
+    "nextPub": "",
+    "scheduled": "",
     "url": "https://app.notion.com/p/39f748204dbd8169b5fecbc6479dee90",
     "next": [
       "04 Baby Sleep(사용자 재정의: Alarmo풍 자장가, 60/55/50 BPM 아크) — 30곡 제목 확정 → SUNO 생성 → 캡컷 → 예약(08-12 목표)",
