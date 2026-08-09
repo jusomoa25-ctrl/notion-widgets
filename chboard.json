@@ -56,16 +56,17 @@
     "name": "FUKULIST",
     "icon": "icons/brand/fukulist.png",
     "subs": 1,
-    "videos": 1,
-    "reserved": 0,
+    "videos": 2,
+    "reserved": 1,
     "target": 4,
-    "nextPub": "",
-    "scheduled": "",
+    "nextPub": "08-13 목 21:00",
+    "scheduled": "SUMMER PLAYLIST(08-13 목)",
     "url": "https://app.notion.com/p/38a748204dbd8137bf57ef4e49e7b9b7",
     "next": [
-      "01 OWL LIFE 발행 완료(08-06 목 21:00, KZ3WCYlx11M) — 제목에 동반 멘트 반영(夜通し頑張るあなたに寄り添う)",
-      "전화 인증(youtube.com/verify) → 썸네일 1.jpg 재등록(403 해소)",
-      "리믹스 허용안함·핀 댓글(Studio 수동) · 02 컨셉 착수"
+      "02 SUMMER PLAYLIST 예약 완료(08-13 목 21:00, wUH0Y1wFjMA, 8개국어·여름 트렌드 태그 등록) — 잔여: AI 공개 토글·리믹스·핀 댓글(Studio 수동)",
+      "01 OWL LIFE 발행 완료(08-06 목 21:00, KZ3WCYlx11M)",
+      "전화 인증(youtube.com/verify) → 썸네일 재등록(403 해소)",
+      "03 컨셉 착수"
     ],
     "start": "2026-08-06"
   },
