@@ -2,7 +2,7 @@
   {
     "name": "GEKOLIST",
     "icon": "icons/brand/gekolist.png",
-    "subs": 6010,
+    "subs": 6300,
     "videos": 6,
     "reserved": 3,
     "target": 4,
@@ -19,8 +19,8 @@
   {
     "name": "SLEEPYTEDDYLIST",
     "icon": "icons/brand/sleepyteddy.png",
-    "subs": 829,
-    "videos": 4,
+    "subs": 830,
+    "videos": 5,
     "reserved": 2,
     "target": 4,
     "nextPub": "08-09 일 22:00",
@@ -36,7 +36,7 @@
   {
     "name": "WHALELIST",
     "icon": "icons/brand/whalelist.png",
-    "subs": 1,
+    "subs": 2,
     "videos": 3,
     "reserved": 1,
     "target": 4,
@@ -56,7 +56,7 @@
     "name": "FUKULIST",
     "icon": "icons/brand/fukulist.png",
     "subs": 1,
-    "videos": 2,
+    "videos": 1,
     "reserved": 1,
     "target": 4,
     "nextPub": "08-13 목 21:00",
@@ -88,7 +88,7 @@
   {
     "name": "LAZE",
     "icon": "icons/brand/laze.png",
-    "subs": 7,
+    "subs": 8,
     "videos": 3,
     "stage": "음원 연동 채널",
     "scheduled": "Not Enough MV 07-19(일) 공개 — 싱글 발매일",
