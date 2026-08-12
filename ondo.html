@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ONDO 진입 플랜</title>
+<style>
+  :root { --bg:#ffffff; --fg:#1f1f1f; --sub:#787774; --line:#e8e6e3; --grid:#f0efec;
+          --up:#2eaa6e; --down:#d4443c; --ma:#b08cd9; --buy:#2e7cd6; --sell:#e0a13a; --stop:#d4443c; }
+  @media (prefers-color-scheme: dark){ :root{ --bg:#191919; --fg:#ececec; --sub:#9b9b9b; --line:#333; --grid:#242424;
+          --up:#4ec48c; --down:#e5675e; --ma:#c3a3e8; --buy:#5a9fe2; --sell:#e8b75c; --stop:#e5675e; } }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:var(--bg);color:var(--fg);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Malgun Gothic",sans-serif;padding:10px 12px}
+  .head{display:flex;justify-content:space-between;align-items:baseline;margin:0 2px 8px}
+  .head .t{font-size:12px;letter-spacing:2px;color:var(--sub);font-weight:700}
+  .head .u{font-size:10px;color:var(--sub)}
+  .stats{display:flex;margin:0 0 4px}
+  .st{flex:1;text-align:center}
+  .st b{display:block;font-size:19px;font-weight:800;font-variant-numeric:tabular-nums;line-height:1.15}
+  .st span{font-size:10.5px;color:var(--sub)}
+  .verdict{margin:6px 2px 8px;padding:7px 10px;border-radius:5px;font-size:12.5px;line-height:1.45;background:var(--grid)}
+  .verdict b{font-weight:700}
+  svg{display:block;width:100%}
+  .pnl{display:flex;margin:0 0 8px;padding:8px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+  .pnl .p{flex:1;text-align:center}
+  .pnl .p b{display:block;font-size:16px;font-weight:800;font-variant-numeric:tabular-nums;line-height:1.15}
+  .pnl .p span{font-size:10.5px;color:var(--sub)}
+  .legend{display:flex;flex-wrap:wrap;gap:10px;margin:8px 2px 0;font-size:10.5px;color:var(--sub)}
+  .legend i{display:inline-block;width:16px;height:2px;vertical-align:middle;margin-right:4px}
+  table{width:100%;border-collapse:collapse;margin-top:10px;font-size:11.5px;font-variant-numeric:tabular-nums}
+  th,td{padding:4px 6px;text-align:right;border-bottom:1px solid var(--line)}
+  th{color:var(--sub);font-weight:600;font-size:10.5px}
+  td:first-child,th:first-child{text-align:left}
+  .done{color:var(--up);font-weight:700}
+  .wait{color:var(--sub)}
+  .err{color:var(--sub);font-size:12.5px;text-align:center;padding:24px 0}
+</style>
+</head>
+<body>
+  <div class="head"><div class="t">ONDO 진입 플랜</div><div class="u" id="upd">불러오는 중</div></div>
+  <div class="stats" id="stats"></div>
+  <div class="verdict" id="verdict" hidden></div>
+  <div class="pnl" id="pnl" hidden></div>
+  <svg id="chart"></svg>
+  <div class="legend" id="legend" hidden>
+    <span><i style="background:var(--buy)"></i>매수 지정가</span>
+    <span><i style="background:var(--sell)"></i>익절 지정가</span>
+    <span><i style="background:var(--stop);border-top:1px dashed"></i>철수선</span>
+    <span><i style="background:var(--ma)"></i>MA200</span>
+  </div>
+  <table id="plan" hidden>
+    <thead><tr><th>단계</th><th>비중</th><th>매수가</th><th>익절가</th><th>상태</th></tr></thead>
+    <tbody id="planbody"></tbody>
+  </table>
+  <div class="err" id="err" hidden></div>
+
+<script>
+// 진입 플랜. 값을 바꾸면 차트·표가 함께 갱신된다.
+var PLAN = [
+  { name: "1차",   w: 20, buy: 0.335, tp: 0.355 },
+  { name: "2차",   w: 20, buy: 0.320, tp: 0.339 },
+  { name: "3차",   w: 20, buy: 0.305, tp: 0.323 },
+  { name: "예비",  w: 40, buy: 0.278, tp: 0.295 }
+];
+var HALT = 0.29;   // 일봉 종가 이 아래 = 신규 매수 중단
+var EXIT = 0.26;   // 일봉 종가 이 아래 = 전량 재검토
+var API = "https://api.binance.com/api/v3/";
+
+function fmt(v, d){ return v.toFixed(d === undefined ? 4 : d); }
+
+function rsi(c, n){
+  n = n || 14;
+  var g = 0, l = 0, i;
+  for (i = 1; i <= n; i++){ var ch = c[i] - c[i-1]; if (ch > 0) g += ch; else l -= ch; }
+  var ag = g/n, al = l/n;
+  for (i = n+1; i < c.length; i++){
+    var d = c[i] - c[i-1];
+    ag = (ag*(n-1) + Math.max(d, 0))/n;
+    al = (al*(n-1) + Math.max(-d, 0))/n;
+  }
+  return al === 0 ? 100 : 100 - 100/(1 + ag/al);
+}
+
+Promise.all([
+  fetch(API + "klines?symbol=ONDOUSDT&interval=1d&limit=400").then(function(r){ return r.json(); }),
+  fetch(API + "ticker/24hr?symbol=ONDOUSDT").then(function(r){ return r.json(); })
+]).then(function(res){
+  var raw = res[0], tk = res[1];
+  var bars = raw.map(function(k){
+    return { t: k[0], o: +k[1], h: +k[2], l: +k[3], c: +k[4] };
+  });
+  var closes = bars.map(function(b){ return b.c; });
+  var px = +tk.lastPrice, chg = +tk.priceChangePercent;
+  var ma200 = closes.slice(-200).reduce(function(a,b){ return a+b; }, 0) / 200;
+  var r = rsi(closes);
+
+  document.getElementById("upd").textContent =
+    new Date().toLocaleString("ko-KR", { month:"2-digit", day:"2-digit", hour:"2-digit", minute:"2-digit" }) + " 기준 · Binance";
+
+  document.getElementById("stats").innerHTML =
+    "<div class='st'><b>" + fmt(px) + "</b><span>현재가 USDT</span></div>" +
+    "<div class='st'><b style='color:" + (chg >= 0 ? "var(--up)" : "var(--down)") + "'>" +
+      (chg >= 0 ? "+" : "") + chg.toFixed(2) + "%</b><span>24시간</span></div>" +
+    "<div class='st'><b>" + (px >= ma200 ? "+" : "") + ((px/ma200-1)*100).toFixed(1) + "%</b><span>MA200 대비</span></div>" +
+    "<div class='st'><b>" + r.toFixed(0) + "</b><span>RSI(14)</span></div>";
+
+  // 현재 상태 판정
+  var lastClose = bars[bars.length-1].c;
+  var v = document.getElementById("verdict"), msg, color;
+  if (lastClose < EXIT){
+    msg = "<b>전량 재검토.</b> 일봉 종가가 " + fmt(EXIT) + " 아래다. 최대 매물대가 무너졌으므로 전략 전제가 깨졌다.";
+    color = "var(--stop)";
+  } else if (lastClose < HALT){
+    msg = "<b>신규 매수 중단.</b> 일봉 종가가 " + fmt(HALT) + " 아래다. 그리드를 정지하고 관망한다.";
+    color = "var(--stop)";
+  } else {
+    var hit = PLAN.filter(function(p){ return px <= p.buy; });
+    var next = PLAN.filter(function(p){ return px > p.buy; }).pop();
+    if (hit.length){
+      msg = "<b>" + hit.map(function(p){ return p.name; }).join(" · ") + " 매수 구간.</b> " +
+            "현재가가 " + fmt(hit[0].buy) + " 이하다. 익절 지정가 " + fmt(hit[0].tp) + " 확인.";
+      color = "var(--buy)";
+    } else {
+      msg = "<b>대기.</b> 다음 매수 지정가는 " + fmt(next.buy) + " (" + next.name + "), " +
+            "현재가에서 " + ((next.buy/px-1)*100).toFixed(1) + "%.";
+      color = "var(--sub)";
+    }
+  }
+  v.innerHTML = msg.replace("<b>", "<b style='color:" + color + "'>"); v.hidden = false;
+
+  // 총자산 기준 수익률 — ?qty=보유수량&cash=미투입현금&init=초기총투자금
+  // 분할 매수 + 부분 익절에서는 평단 수익률이 성과를 못 보여준다. 현금과 코인 평가액을 합쳐서 본다.
+  var q = new URLSearchParams(location.search);
+  var qty = parseFloat(q.get("qty")), cash = parseFloat(q.get("cash")), init = parseFloat(q.get("init"));
+  if (isFinite(qty) && isFinite(cash) && isFinite(init) && init > 0){
+    var equity = cash + qty * px;
+    var rate = (equity - init) / init * 100;
+    var col = rate >= 0 ? "var(--up)" : "var(--down)";
+    document.getElementById("pnl").innerHTML =
+      "<div class='p'><b>" + init.toLocaleString(undefined, {maximumFractionDigits:0}) + "</b><span>초기 투자금</span></div>" +
+      "<div class='p'><b>" + equity.toLocaleString(undefined, {maximumFractionDigits:0}) + "</b><span>현재 총자산</span></div>" +
+      "<div class='p'><b style='color:" + col + "'>" + (rate >= 0 ? "+" : "") + rate.toFixed(2) + "%</b><span>수익률</span></div>" +
+      "<div class='p'><b>" + (qty * px / equity * 100).toFixed(0) + "%</b><span>코인 비중</span></div>";
+    document.getElementById("pnl").hidden = false;
+  }
+
+  // 차트 — 최근 180일
+  var win = bars.slice(-180);
+  var levels = PLAN.map(function(p){ return p.buy; }).concat(PLAN.map(function(p){ return p.tp; }), [HALT, EXIT]);
+  var lo = Math.min.apply(null, win.map(function(b){ return b.l; }).concat(levels)) * 0.97;
+  var hi = Math.max.apply(null, win.map(function(b){ return b.h; }).concat(levels)) * 1.03;
+
+  var W = 720, H = 300, padL = 6, padR = 52, padT = 8, padB = 20;
+  var cw = W - padL - padR, chh = H - padT - padB;
+  var x = function(i){ return padL + i * cw / (win.length - 1); };
+  var y = function(v){ return padT + (hi - v) / (hi - lo) * chh; };
+
+  var svg = document.getElementById("chart");
+  svg.setAttribute("viewBox", "0 0 " + W + " " + H);
+  var out = "";
+
+  // 가격 라인
+  var path = win.map(function(b, i){ return (i ? "L" : "M") + x(i).toFixed(1) + " " + y(b.c).toFixed(1); }).join(" ");
+  out += "<path d='" + path + " L" + x(win.length-1).toFixed(1) + " " + (padT+chh) + " L" + padL + " " + (padT+chh) + " Z' fill='var(--grid)' opacity='.6'/>";
+  out += "<path d='" + path + "' fill='none' stroke='var(--fg)' stroke-width='1.3' opacity='.75'/>";
+
+  // MA200 (창 구간의 각 시점 기준)
+  var maPath = win.map(function(b, i){
+    var idx = bars.length - win.length + i;
+    if (idx < 199) return null;
+    var s = 0; for (var k = idx-199; k <= idx; k++) s += bars[k].c;
+    return (s/200);
+  });
+  var mp = "", started = false;
+  maPath.forEach(function(m, i){ if (m == null) return; mp += (started ? "L" : "M") + x(i).toFixed(1) + " " + y(m).toFixed(1) + " "; started = true; });
+  if (mp) out += "<path d='" + mp + "' fill='none' stroke='var(--ma)' stroke-width='1.2' opacity='.9'/>";
+
+  // 레벨선 — 라벨은 y좌표가 겹치지 않도록 아래로 밀어 배치한다
+  var marks = [];
+  PLAN.forEach(function(p){
+    marks.push({ v: p.buy, color: "var(--buy)", label: p.name + " " + fmt(p.buy, 3) });
+    marks.push({ v: p.tp,  color: "var(--sell)", label: "익절 " + fmt(p.tp, 3) });
+  });
+  marks.push({ v: HALT, color: "var(--stop)", label: "중단 " + fmt(HALT, 2), dash: true });
+  marks.push({ v: EXIT, color: "var(--stop)", label: "철수 " + fmt(EXIT, 2), dash: true });
+  marks.push({ v: px, color: "var(--fg)", label: fmt(px, 3), bold: true, cur: true });
+
+  marks = marks.filter(function(m){ return m.v >= lo && m.v <= hi; });
+  marks.forEach(function(m){ m.y = y(m.v); });
+  marks.sort(function(a, b){ return a.y - b.y; });
+  var GAP = 11, prev = -Infinity;
+  marks.forEach(function(m){ m.ly = Math.max(m.y, prev + GAP); prev = m.ly; });
+  var over = marks.length ? marks[marks.length-1].ly - (padT + chh) : 0;
+  if (over > 0) marks.forEach(function(m){ m.ly -= over; });  // 아래로 넘치면 통째로 올린다
+
+  marks.forEach(function(m){
+    if (!m.cur){
+      out += "<line x1='" + padL + "' y1='" + m.y.toFixed(1) + "' x2='" + (padL+cw) + "' y2='" + m.y.toFixed(1) +
+             "' stroke='" + m.color + "' stroke-width='1' " + (m.dash ? "stroke-dasharray='4 3'" : "") + " opacity='.85'/>";
+    } else {
+      out += "<circle cx='" + x(win.length-1).toFixed(1) + "' cy='" + m.y.toFixed(1) + "' r='3' fill='var(--fg)'/>";
+    }
+    // 선과 라벨이 어긋난 만큼 잇는 실선
+    if (Math.abs(m.ly - m.y) > 1.5){
+      out += "<path d='M" + (padL+cw) + " " + m.y.toFixed(1) + " L" + (padL+cw+3) + " " + m.ly.toFixed(1) +
+             "' stroke='" + m.color + "' stroke-width='.7' fill='none' opacity='.5'/>";
+    }
+    out += "<text x='" + (padL+cw+5) + "' y='" + (m.ly + 3.5).toFixed(1) + "' font-size='" + (m.bold ? 10 : 9.5) +
+           "'" + (m.bold ? " font-weight='700'" : "") + " fill='" + m.color + "'>" + m.label + "</text>";
+  });
+
+  svg.innerHTML = out;
+  document.getElementById("legend").hidden = false;
+
+  // 플랜 표
+  document.getElementById("planbody").innerHTML = PLAN.map(function(p){
+    var reached = px <= p.buy;
+    return "<tr><td>" + p.name + "</td><td>" + p.w + "</td><td>" + fmt(p.buy, 3) + "</td><td>" + fmt(p.tp, 3) +
+           "</td><td class='" + (reached ? "done" : "wait") + "'>" +
+           (reached ? "도달" : "-" + ((1 - p.buy/px)*100).toFixed(1) + "%") + "</td></tr>";
+  }).join("");
+  document.getElementById("plan").hidden = false;
+
+}).catch(function(e){
+  var el = document.getElementById("err");
+  el.textContent = "시세를 불러오지 못했습니다. Binance API 접근이 차단된 네트워크일 수 있습니다.";
+  el.hidden = false;
+  document.getElementById("upd").textContent = "오류";
+});
+</script>
+</body>
+</html>
