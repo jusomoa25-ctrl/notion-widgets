@@ -41,10 +41,10 @@
     "icon": "icons/brand/whalelist.png",
     "subs": 3,
     "videos": 4,
-    "reserved": 1,
+    "reserved": 0,
     "target": 4,
-    "nextPub": "08-12 수 22:00",
-    "scheduled": "Baby Sleep(08-12 수)",
+    "nextPub": "",
+    "scheduled": "",
     "url": "https://app.notion.com/p/39f748204dbd8169b5fecbc6479dee90",
     "next": [
       "컨셉 3종 확정(08-10): 06 VELVET CURRENT(현악 지속음)·07 UNDERWATER CATHEDRAL(오르간)·08 GLASS LAGOON(유리 순음) — 각 30곡, 3시간 이상",
