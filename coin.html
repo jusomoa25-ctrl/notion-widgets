@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>ONDO 진입 플랜</title>
+<title>진입 플랜</title>
 <style>
   :root { --bg:#ffffff; --fg:#1f1f1f; --sub:#787774; --line:#e8e6e3; --grid:#f0efec;
           --up:#2eaa6e; --down:#d4443c; --ma:#b08cd9; --buy:#2e7cd6; --sell:#e0a13a; --stop:#d4443c; }
@@ -37,7 +37,7 @@
 </style>
 </head>
 <body>
-  <div class="head"><div class="t">ONDO 진입 플랜</div><div class="u" id="upd">불러오는 중</div></div>
+  <div class="head"><div class="t" id="title">진입 플랜</div><div class="u" id="upd">불러오는 중</div></div>
   <div class="stats" id="stats"></div>
   <div class="verdict" id="verdict" hidden></div>
   <div class="pnl" id="pnl" hidden></div>
@@ -55,18 +55,36 @@
   <div class="err" id="err" hidden></div>
 
 <script>
-// 진입 플랜. 값을 바꾸면 차트·표가 함께 갱신된다.
-var PLAN = [
-  { name: "1차",   w: 20, buy: 0.335, tp: 0.355 },
-  { name: "2차",   w: 20, buy: 0.320, tp: 0.339 },
-  { name: "3차",   w: 20, buy: 0.305, tp: 0.323 },
-  { name: "예비",  w: 40, buy: 0.278, tp: 0.295 }
-];
-var HALT = 0.29;   // 일봉 종가 이 아래 = 신규 매수 중단
-var EXIT = 0.26;   // 일봉 종가 이 아래 = 전량 재검토
+// 종목·플랜을 URL 파라미터로 받는다. 예:
+//   ?s=ONDOUSDT&plan=0.335/20,0.320/20,0.305/20,0.278/40&tp=6&halt=0.29&exit=0.26
+//   보유 상태를 더하면 총자산 수익률까지: &qty=537&cash=720&init=900
+// 파라미터가 없으면 아래 기본값(ONDO)을 쓴다.
+var Q = new URLSearchParams(location.search);
+var SYMBOL = (Q.get("s") || "ONDOUSDT").toUpperCase();
+var COIN = SYMBOL.replace(/USDT$|BUSD$|USDC$/, "");
+var TP_PCT = parseFloat(Q.get("tp")) || 6;   // 매수가 대비 익절 %
+
+var LABELS = ["1차", "2차", "3차", "예비", "5차", "6차"];
+function parsePlan(raw){
+  // "0.335/20,0.320/20" → [{name,w,buy,tp}]
+  return raw.split(",").map(function(part, i){
+    var bits = part.split("/");
+    var buy = parseFloat(bits[0]);
+    return { name: LABELS[i] || (i+1) + "차", w: parseFloat(bits[1]) || 0,
+             buy: buy, tp: buy * (1 + TP_PCT/100) };
+  }).filter(function(p){ return isFinite(p.buy); });
+}
+
+var PLAN = parsePlan(Q.get("plan") || "0.335/20,0.320/20,0.305/20,0.278/40");
+var HALT = parseFloat(Q.get("halt"));   // 일봉 종가 이 아래 = 신규 매수 중단
+var EXIT = parseFloat(Q.get("exit"));   // 일봉 종가 이 아래 = 전량 재검토
+if (!isFinite(HALT)) HALT = 0.29;
+if (!isFinite(EXIT)) EXIT = 0.26;
 var API = "https://api.binance.com/api/v3/";
 
-function fmt(v, d){ return v.toFixed(d === undefined ? 4 : d); }
+// 가격대에 따라 소수 자릿수를 맞춘다. BTC와 ONDO를 같은 포맷으로 쓸 수 없다.
+function digits(v){ return v >= 1000 ? 1 : v >= 100 ? 2 : v >= 1 ? 3 : v >= 0.1 ? 4 : 6; }
+function fmt(v, d){ return v.toFixed(d === undefined ? digits(v) : d); }
 
 function rsi(c, n){
   n = n || 14;
@@ -81,9 +99,12 @@ function rsi(c, n){
   return al === 0 ? 100 : 100 - 100/(1 + ag/al);
 }
 
+document.getElementById("title").textContent = COIN + " 진입 플랜";
+document.title = COIN + " 진입 플랜";
+
 Promise.all([
-  fetch(API + "klines?symbol=ONDOUSDT&interval=1d&limit=400").then(function(r){ return r.json(); }),
-  fetch(API + "ticker/24hr?symbol=ONDOUSDT").then(function(r){ return r.json(); })
+  fetch(API + "klines?symbol=" + SYMBOL + "&interval=1d&limit=400").then(function(r){ return r.json(); }),
+  fetch(API + "ticker/24hr?symbol=" + SYMBOL).then(function(r){ return r.json(); })
 ]).then(function(res){
   var raw = res[0], tk = res[1];
   var bars = raw.map(function(k){
@@ -98,7 +119,7 @@ Promise.all([
     new Date().toLocaleString("ko-KR", { month:"2-digit", day:"2-digit", hour:"2-digit", minute:"2-digit" }) + " 기준 · Binance";
 
   document.getElementById("stats").innerHTML =
-    "<div class='st'><b>" + fmt(px) + "</b><span>현재가 USDT</span></div>" +
+    "<div class='st'><b>" + fmt(px) + "</b><span>현재가</span></div>" +
     "<div class='st'><b style='color:" + (chg >= 0 ? "var(--up)" : "var(--down)") + "'>" +
       (chg >= 0 ? "+" : "") + chg.toFixed(2) + "%</b><span>24시간</span></div>" +
     "<div class='st'><b>" + (px >= ma200 ? "+" : "") + ((px/ma200-1)*100).toFixed(1) + "%</b><span>MA200 대비</span></div>" +
@@ -130,8 +151,7 @@ Promise.all([
 
   // 총자산 기준 수익률 — ?qty=보유수량&cash=미투입현금&init=초기총투자금
   // 분할 매수 + 부분 익절에서는 평단 수익률이 성과를 못 보여준다. 현금과 코인 평가액을 합쳐서 본다.
-  var q = new URLSearchParams(location.search);
-  var qty = parseFloat(q.get("qty")), cash = parseFloat(q.get("cash")), init = parseFloat(q.get("init"));
+  var qty = parseFloat(Q.get("qty")), cash = parseFloat(Q.get("cash")), init = parseFloat(Q.get("init"));
   if (isFinite(qty) && isFinite(cash) && isFinite(init) && init > 0){
     var equity = cash + qty * px;
     var rate = (equity - init) / init * 100;
@@ -150,7 +170,11 @@ Promise.all([
   var lo = Math.min.apply(null, win.map(function(b){ return b.l; }).concat(levels)) * 0.97;
   var hi = Math.max.apply(null, win.map(function(b){ return b.h; }).concat(levels)) * 1.03;
 
-  var W = 720, H = 300, padL = 6, padR = 52, padT = 8, padB = 20;
+  // 우측 여백은 라벨 길이에 맞춘다. BTC(6자리)와 ONDO(0.xxxx)는 라벨 폭이 다르다.
+  var sampleLabels = PLAN.map(function(p){ return p.name + " " + fmt(p.buy); })
+    .concat(PLAN.map(function(p){ return "익절 " + fmt(p.tp); }), ["중단 " + fmt(HALT), "철수 " + fmt(EXIT)]);
+  var maxLabel = Math.max.apply(null, sampleLabels.map(function(s){ return s.length; }));
+  var W = 720, H = 300, padL = 6, padR = Math.max(52, maxLabel * 5.4 + 10), padT = 8, padB = 20;
   var cw = W - padL - padR, chh = H - padT - padB;
   var x = function(i){ return padL + i * cw / (win.length - 1); };
   var y = function(v){ return padT + (hi - v) / (hi - lo) * chh; };
@@ -178,12 +202,12 @@ Promise.all([
   // 레벨선 — 라벨은 y좌표가 겹치지 않도록 아래로 밀어 배치한다
   var marks = [];
   PLAN.forEach(function(p){
-    marks.push({ v: p.buy, color: "var(--buy)", label: p.name + " " + fmt(p.buy, 3) });
-    marks.push({ v: p.tp,  color: "var(--sell)", label: "익절 " + fmt(p.tp, 3) });
+    marks.push({ v: p.buy, color: "var(--buy)", label: p.name + " " + fmt(p.buy) });
+    marks.push({ v: p.tp,  color: "var(--sell)", label: "익절 " + fmt(p.tp) });
   });
-  marks.push({ v: HALT, color: "var(--stop)", label: "중단 " + fmt(HALT, 2), dash: true });
-  marks.push({ v: EXIT, color: "var(--stop)", label: "철수 " + fmt(EXIT, 2), dash: true });
-  marks.push({ v: px, color: "var(--fg)", label: fmt(px, 3), bold: true, cur: true });
+  marks.push({ v: HALT, color: "var(--stop)", label: "중단 " + fmt(HALT), dash: true });
+  marks.push({ v: EXIT, color: "var(--stop)", label: "철수 " + fmt(EXIT), dash: true });
+  marks.push({ v: px, color: "var(--fg)", label: fmt(px), bold: true, cur: true });
 
   marks = marks.filter(function(m){ return m.v >= lo && m.v <= hi; });
   marks.forEach(function(m){ m.y = y(m.v); });
@@ -215,7 +239,7 @@ Promise.all([
   // 플랜 표
   document.getElementById("planbody").innerHTML = PLAN.map(function(p){
     var reached = px <= p.buy;
-    return "<tr><td>" + p.name + "</td><td>" + p.w + "</td><td>" + fmt(p.buy, 3) + "</td><td>" + fmt(p.tp, 3) +
+    return "<tr><td>" + p.name + "</td><td>" + p.w + "</td><td>" + fmt(p.buy) + "</td><td>" + fmt(p.tp) +
            "</td><td class='" + (reached ? "done" : "wait") + "'>" +
            (reached ? "도달" : "-" + ((1 - p.buy/px)*100).toFixed(1) + "%") + "</td></tr>";
   }).join("");
