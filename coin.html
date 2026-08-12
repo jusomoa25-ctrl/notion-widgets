@@ -170,68 +170,82 @@ Promise.all([
   var lo = Math.min.apply(null, win.map(function(b){ return b.l; }).concat(levels)) * 0.97;
   var hi = Math.max.apply(null, win.map(function(b){ return b.h; }).concat(levels)) * 1.03;
 
-  // 우측 여백은 라벨 길이에 맞춘다. BTC(6자리)와 ONDO(0.xxxx)는 라벨 폭이 다르다.
-  var sampleLabels = PLAN.map(function(p){ return p.name + " " + fmt(p.buy); })
-    .concat(PLAN.map(function(p){ return "익절 " + fmt(p.tp); }), ["중단 " + fmt(HALT), "철수 " + fmt(EXIT)]);
-  var maxLabel = Math.max.apply(null, sampleLabels.map(function(s){ return s.length; }));
-  var W = 720, H = 300, padL = 6, padR = Math.max(52, maxLabel * 5.4 + 10), padT = 8, padB = 20;
+  var W = 720, H = 340, padL = 8, padR = Math.max(58, fmt(hi).length * 6 + 16), padT = 10, padB = 26;
   var cw = W - padL - padR, chh = H - padT - padB;
   var x = function(i){ return padL + i * cw / (win.length - 1); };
   var y = function(v){ return padT + (hi - v) / (hi - lo) * chh; };
+  var cy2 = function(v){ return Math.max(padT, Math.min(padT + chh, y(v))); };  // 차트 밖으로 새지 않게
 
   var svg = document.getElementById("chart");
   svg.setAttribute("viewBox", "0 0 " + W + " " + H);
   var out = "";
+  var R = function(n){ return n.toFixed(1); };
 
-  // 가격 라인
-  var path = win.map(function(b, i){ return (i ? "L" : "M") + x(i).toFixed(1) + " " + y(b.c).toFixed(1); }).join(" ");
-  out += "<path d='" + path + " L" + x(win.length-1).toFixed(1) + " " + (padT+chh) + " L" + padL + " " + (padT+chh) + " Z' fill='var(--grid)' opacity='.6'/>";
-  out += "<path d='" + path + "' fill='none' stroke='var(--fg)' stroke-width='1.3' opacity='.75'/>";
+  // 1) 위험 구역을 배경색으로 깐다. 선을 긋는 것보다 한눈에 들어온다
+  var yExit = cy2(EXIT), yHalt = cy2(HALT), yBot = padT + chh;
+  if (yExit < yBot)
+    out += "<rect x='"+padL+"' y='"+R(yExit)+"' width='"+cw+"' height='"+R(yBot-yExit)+"' fill='var(--stop)' opacity='.09'/>";
+  if (yHalt < yExit)
+    out += "<rect x='"+padL+"' y='"+R(yHalt)+"' width='"+cw+"' height='"+R(yExit-yHalt)+"' fill='var(--stop)' opacity='.045'/>";
 
-  // MA200 (창 구간의 각 시점 기준)
-  var maPath = win.map(function(b, i){
-    var idx = bars.length - win.length + i;
-    if (idx < 199) return null;
-    var s = 0; for (var k = idx-199; k <= idx; k++) s += bars[k].c;
-    return (s/200);
-  });
-  var mp = "", started = false;
-  maPath.forEach(function(m, i){ if (m == null) return; mp += (started ? "L" : "M") + x(i).toFixed(1) + " " + y(m).toFixed(1) + " "; started = true; });
-  if (mp) out += "<path d='" + mp + "' fill='none' stroke='var(--ma)' stroke-width='1.2' opacity='.9'/>";
-
-  // 레벨선 — 라벨은 y좌표가 겹치지 않도록 아래로 밀어 배치한다
-  var marks = [];
+  // 2) 매수 -> 익절 구간을 밴드로. 밴드는 우측에만 깔아 좌측 가격 흐름을 가리지 않는다
+  var bandX = padL + cw * 0.60, bandW = cw * 0.40;
+  out += "<line x1='"+R(bandX)+"' y1='"+padT+"' x2='"+R(bandX)+"' y2='"+R(yBot)+"' stroke='var(--line)' stroke-width='.8'/>";
   PLAN.forEach(function(p){
-    marks.push({ v: p.buy, color: "var(--buy)", label: p.name + " " + fmt(p.buy) });
-    marks.push({ v: p.tp,  color: "var(--sell)", label: "익절 " + fmt(p.tp) });
+    var yT = cy2(p.tp), yB = cy2(p.buy);
+    out += "<rect x='"+R(bandX)+"' y='"+R(yT)+"' width='"+R(bandW)+"' height='"+R(Math.max(1, yB-yT))+"' fill='var(--buy)' opacity='.10'/>";
+    out += "<line x1='"+padL+"' y1='"+R(yB)+"' x2='"+(padL+cw)+"' y2='"+R(yB)+"' stroke='var(--buy)' stroke-width='1.1'/>";
+    out += "<line x1='"+R(bandX)+"' y1='"+R(yT)+"' x2='"+(padL+cw)+"' y2='"+R(yT)+"' stroke='var(--sell)' stroke-width='.9' stroke-dasharray='3 3' opacity='.85'/>";
   });
-  marks.push({ v: HALT, color: "var(--stop)", label: "중단 " + fmt(HALT), dash: true });
-  marks.push({ v: EXIT, color: "var(--stop)", label: "철수 " + fmt(EXIT), dash: true });
-  marks.push({ v: px, color: "var(--fg)", label: fmt(px), bold: true, cur: true });
 
-  marks = marks.filter(function(m){ return m.v >= lo && m.v <= hi; });
-  marks.forEach(function(m){ m.y = y(m.v); });
-  marks.sort(function(a, b){ return a.y - b.y; });
-  var GAP = 11, prev = -Infinity;
-  marks.forEach(function(m){ m.ly = Math.max(m.y, prev + GAP); prev = m.ly; });
-  var over = marks.length ? marks[marks.length-1].ly - (padT + chh) : 0;
-  if (over > 0) marks.forEach(function(m){ m.ly -= over; });  // 아래로 넘치면 통째로 올린다
+  // 3) Y축 눈금 — 가격은 우측에만 적는다
+  for (var t = 0; t <= 4; t++){
+    var gv = lo + (hi - lo) * t / 4, gy = y(gv);
+    out += "<line x1='"+padL+"' y1='"+R(gy)+"' x2='"+(padL+cw)+"' y2='"+R(gy)+"' stroke='var(--line)' stroke-width='.5' opacity='.45'/>";
+    out += "<text x='"+(padL+cw+6)+"' y='"+R(gy+3)+"' font-size='9' fill='var(--sub)' stroke='var(--bg)' stroke-width='2.5' paint-order='stroke'>"+fmt(gv)+"</text>";
+  }
 
-  marks.forEach(function(m){
-    if (!m.cur){
-      out += "<line x1='" + padL + "' y1='" + m.y.toFixed(1) + "' x2='" + (padL+cw) + "' y2='" + m.y.toFixed(1) +
-             "' stroke='" + m.color + "' stroke-width='1' " + (m.dash ? "stroke-dasharray='4 3'" : "") + " opacity='.85'/>";
-    } else {
-      out += "<circle cx='" + x(win.length-1).toFixed(1) + "' cy='" + m.y.toFixed(1) + "' r='3' fill='var(--fg)'/>";
-    }
-    // 선과 라벨이 어긋난 만큼 잇는 실선
-    if (Math.abs(m.ly - m.y) > 1.5){
-      out += "<path d='M" + (padL+cw) + " " + m.y.toFixed(1) + " L" + (padL+cw+3) + " " + m.ly.toFixed(1) +
-             "' stroke='" + m.color + "' stroke-width='.7' fill='none' opacity='.5'/>";
-    }
-    out += "<text x='" + (padL+cw+5) + "' y='" + (m.ly + 3.5).toFixed(1) + "' font-size='" + (m.bold ? 10 : 9.5) +
-           "'" + (m.bold ? " font-weight='700'" : "") + " fill='" + m.color + "'>" + m.label + "</text>";
+  // 4) X축 — 30일 간격 날짜
+  for (var i = 0; i < win.length; i += 30){
+    var dt = new Date(win[i].t);
+    out += "<line x1='"+R(x(i))+"' y1='"+padT+"' x2='"+R(x(i))+"' y2='"+R(yBot)+"' stroke='var(--line)' stroke-width='.5' opacity='.35'/>";
+    out += "<text x='"+R(x(i))+"' y='"+(H-8)+"' font-size='9' fill='var(--sub)' text-anchor='middle'>"+(dt.getMonth()+1)+"/"+dt.getDate()+"</text>";
+  }
+
+  // 5) 가격 라인
+  var path = win.map(function(b, i){ return (i ? "L" : "M") + R(x(i)) + " " + R(y(b.c)); }).join(" ");
+  out += "<path d='" + path + "' fill='none' stroke='var(--fg)' stroke-width='1.6'/>";
+
+  // 6) MA200
+  var mp = "", started = false;
+  win.forEach(function(b, i){
+    var idx = bars.length - win.length + i;
+    if (idx < 199) return;
+    var sum = 0; for (var k = idx-199; k <= idx; k++) sum += bars[k].c;
+    mp += (started ? "L" : "M") + R(x(i)) + " " + R(y(sum/200)) + " "; started = true;
   });
+  if (mp) out += "<path d='" + mp + "' fill='none' stroke='var(--ma)' stroke-width='1.3' opacity='.9'/>";
+
+  // 7) 구간 라벨은 차트 안쪽 왼편에. 우측 가격축과 겹치지 않는다
+  var placed = [];
+  function label(v, text, color, weight){
+    var ly = cy2(v) - 3.5;
+    while (placed.some(function(q){ return Math.abs(q - ly) < 10; })) ly += 10;   // 겹치면 아래로
+    placed.push(ly);
+    // 선 위에 겹쳐도 읽히도록 글자 외곽에 배경색을 두른다
+    out += "<text x='"+R(bandX+5)+"' y='"+R(ly)+"' font-size='9.5' fill='"+color+"' stroke='var(--bg)' stroke-width='3'"
+         + " paint-order='stroke'"+(weight?" font-weight='700'":"")+">"+text+"</text>";
+  }
+  PLAN.forEach(function(p){ label(p.buy, p.name + " " + fmt(p.buy), "var(--buy)", true); });
+  label(HALT, "중단 " + fmt(HALT), "var(--stop)");
+  label(EXIT, "철수 " + fmt(EXIT), "var(--stop)");
+
+  // 8) 현재가 — 점선 + 우측 배지로 확실히 눈에 띄게
+  var pyy = cy2(px);
+  out += "<line x1='"+padL+"' y1='"+R(pyy)+"' x2='"+(padL+cw)+"' y2='"+R(pyy)+"' stroke='var(--fg)' stroke-width='.9' stroke-dasharray='2 2' opacity='.55'/>";
+  out += "<circle cx='"+R(x(win.length-1))+"' cy='"+R(pyy)+"' r='3.5' fill='var(--fg)'/>";
+  out += "<rect x='"+(padL+cw+2)+"' y='"+R(pyy-8)+"' width='"+(padR-4)+"' height='16' rx='3' fill='var(--fg)'/>";
+  out += "<text x='"+(padL+cw+2+(padR-4)/2)+"' y='"+R(pyy+3.5)+"' font-size='9.5' font-weight='700' fill='var(--bg)' text-anchor='middle'>"+fmt(px)+"</text>";
 
   svg.innerHTML = out;
   document.getElementById("legend").hidden = false;
