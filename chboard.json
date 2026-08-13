@@ -2,7 +2,7 @@
   {
     "name": "GEKOLIST",
     "icon": "icons/brand/gekolist.png",
-    "subs": 7350,
+    "subs": 7680,
     "videos": 6,
     "reserved": 4,
     "target": 4,
@@ -60,7 +60,7 @@
     "name": "FUKULIST",
     "icon": "icons/brand/fukulist.png",
     "subs": 2,
-    "videos": 1,
+    "videos": 2,
     "reserved": 1,
     "target": 4,
     "nextPub": "08-13 목 21:00",
