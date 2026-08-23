@@ -2,7 +2,7 @@
   {
     "name": "GEKOLIST",
     "icon": "icons/brand/gekolist.png",
-    "subs": 10900,
+    "subs": 11200,
     "videos": 8,
     "reserved": 3,
     "target": 4,
@@ -22,7 +22,7 @@
     "name": "SLEEPYTEDDYLIST",
     "icon": "icons/brand/sleepyteddy.png",
     "subs": 827,
-    "videos": 6,
+    "videos": 7,
     "reserved": 2,
     "target": 4,
     "nextPub": "08-23 일 22:00",
