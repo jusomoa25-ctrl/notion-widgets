@@ -1,5 +1,19 @@
 [
   {
+    "name": "코인",
+    "icon": "icons/coin.svg",
+    "stage": "XRP 운용 중 · 클래리티 표결 대기",
+    "done": "XRP 1차 진입 $1.475 / 20,000 USDT (총 60,000 중 33%) · 잔여 현금 40,000",
+    "url": "https://app.notion.com/p/3c6748204dbd81e1af03d0b56b7d1b78",
+    "report": "9/15 클래리티 상원 표결 (KST 9/16 03:15)",
+    "reportUrl": "https://app.notion.com/p/XRP-Ripple-3c6748204dbd81288bf2e3611370220e",
+    "next": [
+      "철수가(손절가) 확정 — 현재 하방 대응 없음",
+      "최대 손실 허용액 확정 → 잔여 40,000 집행 여부 결정",
+      "익절을 날짜(9/10~12)가 아니라 조건으로 전환"
+    ]
+  },
+  {
     "name": "케이링크",
     "icon": "icons/brand/klink.png",
     "stage": "운영 · 주소모아 계열",
