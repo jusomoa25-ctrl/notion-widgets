@@ -1,115 +1,108 @@
 [
-  {
-    "name": "GEKOLIST",
-    "icon": "icons/brand/gekolist.png",
-    "subs": 12600,
-    "videos": 8,
-    "reserved": 3,
-    "target": 4,
-    "nextPub": "08-28 금 21:00",
-    "scheduled": "Chill Lo-Fi R&B for the (08-28 금) · Lazy Day Lo-Fi to Rest a(09-04 금) · Deep Sleep Lo-Fi for the(09-11 금)",
-    "url": "https://app.notion.com/p/389748204dbd81a19571e4df1f1970f5",
-    "next": [
-      "SURF SIDE 예약 완료(08-14 금 21:00, TmGwkwkwymE, 26곡 1:03:09, 8개국어 등록) — 잔여: AI 공개 토글·리믹스·핀 댓글(Studio 수동)",
-      "예약 재배치(08-10): 09 NEON DRIVE 08-21 · 07 RESTING 08-28 · 08 DEEP SLEEP 09-04",
-      "STREET VIBE 컨셉 확정 대기"
-    ],
-    "start": "2026-07-03",
-    "report": "주간 전략 08-24",
-    "reportUrl": "https://app.notion.com/p/2026-08-24-3c6748204dbd815fae2febdac94f9c6a"
-  },
-  {
-    "name": "SLEEPYTEDDYLIST",
-    "icon": "icons/brand/sleepyteddy.png",
-    "subs": 827,
-    "videos": 7,
-    "reserved": 4,
-    "target": 4,
-    "nextPub": "08-30 일 22:00",
-    "scheduled": "Nothing Above, Nothing B(08-30 일) · A Guitar in the Room — N(09-06 일) · Overtime Working — Quiet(09-13 일) · Reading Night — Beatless(09-20 일)",
-    "url": "https://app.notion.com/p/38a748204dbd8121a4e2c0d17b91415a",
-    "next": [
-      "컨셉 4종 확정(08-10): 07 THE BARISTA·08 SUMMER NIGHT·09 MEMORY(솔로 피아노) + 10 ROOFTOP NIGHT(솔로 기타) — 각 30곡 제목·프롬프트 완비, SUNO 생성 대기",
-      "BEACH FLOAT·WITH COFFEE 장르 테스트 청취"
-    ],
-    "start": "2026-07-12",
-    "report": "주간 전략 08-24",
-    "reportUrl": "https://app.notion.com/p/2026-08-24-3c6748204dbd815fae2febdac94f9c6a"
-  },
-  {
-    "name": "WHALELIST",
-    "icon": "icons/brand/whalelist.png",
-    "subs": 3,
-    "videos": 6,
-    "reserved": 7,
-    "target": 4,
-    "nextPub": "09-02 수 22:00",
-    "scheduled": "Golden Hours(09-02 수) · Rain on the Piano(09-09 수) · Cotton Candy(09-16 수) · Deep Sea(09-23 수) · Paper Moon(09-30 수) · Rainy Night(10-07 수) · Romantic Night(10-14 수)",
-    "url": "https://app.notion.com/p/39f748204dbd8169b5fecbc6479dee90",
-    "next": [
-      "05 TROPICAL DREAM 예약 완료(08-19 수 22:00, n8h-6wcWq1k, 마림바 65트랙 3:00:56, 8개국어·태그 29 등록) — 잔여: AI 공개 토글·리믹스·엔드스크린·핀 댓글(Studio 수동)",
-      "06 DEEP SEA 악기 후보 = 심해 패드 5종(SLOW CURRENT·PRESSURE·DRIFTING TUNE·FAR ABOVE·STILL DEPTH) 생성 대기 — 컨셉 풀 연결 완료",
-      "05 곡 길이 전곡 3:30 미달(평균 2:47·최단 1:25) + 제목 중복 2건(03/17 Sunlit Moss, 23/29 Warm Hollow) — 교체 여부 결정 대기",
-      "콘텐츠명 확정(08-14, 썸네일 정본): 05 TROPICAL DREAM · 06 DEEP SEA · 07 COTTON CANDY · 08 ROMANTIC NIGHT — 카드 4종 배치 완료, 06~08 악기 미정",
-      "타악기 규칙 완화(08-14): 실로폰 계열(유율 타악)만 예외 허용 → 팔레트 13종(지속음 10 + 실로폰 계열 3)",
-      "07 오르간 폐기(08-14): 생성 5곡 타악기 유입·품질 미달 → 악기 계열 탐색 팔레트에서 1곡씩 생성·비교 후 재선정",
-      "04 Baby Sleep 예약 완료(08-12 수 22:00, mRZs5VmKcLg, 8개국어 등록) — 잔여: AI 공개 토글·리믹스·핀 댓글(Studio 수동)",
-      "05 젤다 미니멀 피아노 착수(SUNO 생성 → 캡컷)",
-      "06+ = 컨셉 풀 10종에서 선정",
-      "01·02·03 리믹스 불가·엔드스크린·자막 인증(Studio 수동)"
-    ],
-    "report": "주간 전략 08-24",
-    "reportUrl": "https://app.notion.com/p/2026-08-24-3c6748204dbd815fae2febdac94f9c6a"
-  },
-  {
-    "name": "FUKULIST",
-    "icon": "icons/brand/fukulist.png",
-    "subs": 4,
-    "videos": 4,
-    "reserved": 2,
-    "target": 4,
-    "nextPub": "09-10 목 21:00",
-    "scheduled": "3AM ROOM(09-10 목) · AMBER NIGHTS(09-24 목)",
-    "url": "https://app.notion.com/p/38a748204dbd8137bf57ef4e49e7b9b7",
-    "next": [
-      "컨셉 3종 + 작사 완료(08-10): 03 BLUE HOUR 24곡 8.44 · 04 AMBER NIGHTS 24곡 8.53 · 05 3AM ROOM 24곡 8.48 — 전 세트 게이트 미달 0곡, SUNO 생성 대기",
-      "02 SUMMER PLAYLIST 예약 완료(08-13 목 21:00, wUH0Y1wFjMA, 8개국어·여름 트렌드 태그 등록) — 잔여: AI 공개 토글·리믹스·핀 댓글(Studio 수동)",
-      "01 OWL LIFE 발행 완료(08-06 목 21:00, KZ3WCYlx11M)",
-      "전화 인증(youtube.com/verify) → 썸네일 재등록(403 해소)",
-      "03 컨셉 착수"
-    ],
-    "start": "2026-08-06",
-    "report": "주간 전략 08-24",
-    "reportUrl": "https://app.notion.com/p/2026-08-24-3c6748204dbd815fae2febdac94f9c6a"
-  },
-  {
-    "name": "PENGLIST",
-    "icon": "icons/brand/penglist.png",
-    "subs": 0,
-    "videos": 0,
-    "reserved": 0,
-    "target": 4,
-    "nextPub": "",
-    "scheduled": "",
-    "url": "https://app.notion.com/p/39f748204dbd8170ac7ec172fe05f45c",
-    "next": [
-      "첫 콘텐츠 컨셉 기획(edm-lyricist) · 슬롯 토 20:00",
-      "전화 인증 + 숙성 활동 이틀+ 선행"
-    ]
-  },
-  {
-    "name": "LAZE",
-    "icon": "icons/brand/laze.png",
-    "subs": 8,
-    "videos": 3,
-    "stage": "음원 연동 채널",
-    "scheduled": "Not Enough MV 07-19(일) 공개 — 싱글 발매일",
-    "url": "https://app.notion.com/p/38a748204dbd81ae9409e81e5930fc92",
-    "next": [
-      "싱글 발매: Not Enough·Ice on my hand·Ice on my neck 07-19 · Last Call 07-20"
-    ],
-    "start": "2026-07-10",
-    "report": "주간 전략 08-24",
-    "reportUrl": "https://app.notion.com/p/2026-08-24-3c6748204dbd815fae2febdac94f9c6a"
-  }
+ {
+  "name": "GEKOLIST",
+  "icon": "icons/brand/gekolist.png",
+  "subs": 12600,
+  "videos": 8,
+  "reserved": 3,
+  "target": 4,
+  "nextPub": "08-28 금 21:00",
+  "scheduled": "Chill Lo-Fi R&B for the (08-28 금) · Lazy Day Lo-Fi to Rest a(09-04 금) · Deep Sleep Lo-Fi for the(09-11 금)",
+  "url": "https://app.notion.com/p/389748204dbd81a19571e4df1f1970f5",
+  "next": [
+   "SURF SIDE 예약 완료(08-14 금 21:00, TmGwkwkwymE, 26곡 1:03:09, 8개국어 등록) — 잔여: AI 공개 토글·리믹스·핀 댓글(Studio 수동)",
+   "예약 재배치(08-10): 09 NEON DRIVE 08-21 · 07 RESTING 08-28 · 08 DEEP SLEEP 09-04",
+   "STREET VIBE 컨셉 확정 대기"
+  ],
+  "start": "2026-07-03",
+  "report": "주간 전략 08-24",
+  "reportUrl": "https://app.notion.com/p/2026-08-24-3c6748204dbd815fae2febdac94f9c6a"
+ },
+ {
+  "name": "SLEEPYTEDDYLIST",
+  "icon": "icons/brand/sleepyteddy.png",
+  "subs": 827,
+  "videos": 7,
+  "reserved": 4,
+  "target": 4,
+  "nextPub": "08-30 일 22:00",
+  "scheduled": "Nothing Above, Nothing B(08-30 일) · A Guitar in the Room — N(09-06 일) · Overtime Working — Quiet(09-13 일) · Reading Night — Beatless(09-20 일)",
+  "url": "https://app.notion.com/p/38a748204dbd8121a4e2c0d17b91415a",
+  "next": [
+   "컨셉 4종 확정(08-10): 07 THE BARISTA·08 SUMMER NIGHT·09 MEMORY(솔로 피아노) + 10 ROOFTOP NIGHT(솔로 기타) — 각 30곡 제목·프롬프트 완비, SUNO 생성 대기",
+   "BEACH FLOAT·WITH COFFEE 장르 테스트 청취"
+  ],
+  "start": "2026-07-12",
+  "report": "주간 전략 08-24",
+  "reportUrl": "https://app.notion.com/p/2026-08-24-3c6748204dbd815fae2febdac94f9c6a"
+ },
+ {
+  "name": "WHALELIST",
+  "icon": "icons/brand/whalelist.png",
+  "subs": 3,
+  "videos": 6,
+  "reserved": 7,
+  "target": 4,
+  "nextPub": "09-02 수 22:00",
+  "scheduled": "Golden Hours(09-02 수) · Romantic Night(09-09 수) · Rain on the Piano(09-16 수) · Paper Moon(09-23 수) · Cotton Candy(09-30 수) · Rainy Night(10-07 수) · Deep Sea(10-21 수)",
+  "url": "https://app.notion.com/p/39f748204dbd8169b5fecbc6479dee90",
+  "next": [
+   "예약 7편 Studio 수동 대기 — AI 공개 토글 · 리믹스 비허용 · 핀 댓글",
+   "10-14 예약 슬롯 비어 있음 — 다음 세트 배정 필요",
+   "FLY TO THE MOON · VIOLET DREAM · DREAM TIME 악기 미정 — 썸네일만 확정"
+  ],
+  "report": "주간 전략 08-24",
+  "reportUrl": "https://app.notion.com/p/2026-08-24-3c6748204dbd815fae2febdac94f9c6a"
+ },
+ {
+  "name": "FUKULIST",
+  "icon": "icons/brand/fukulist.png",
+  "subs": 4,
+  "videos": 4,
+  "reserved": 2,
+  "target": 4,
+  "nextPub": "09-10 목 21:00",
+  "scheduled": "3AM ROOM(09-10 목) · AMBER NIGHTS(09-24 목)",
+  "url": "https://app.notion.com/p/38a748204dbd8137bf57ef4e49e7b9b7",
+  "next": [
+   "컨셉 3종 + 작사 완료(08-10): 03 BLUE HOUR 24곡 8.44 · 04 AMBER NIGHTS 24곡 8.53 · 05 3AM ROOM 24곡 8.48 — 전 세트 게이트 미달 0곡, SUNO 생성 대기",
+   "02 SUMMER PLAYLIST 예약 완료(08-13 목 21:00, wUH0Y1wFjMA, 8개국어·여름 트렌드 태그 등록) — 잔여: AI 공개 토글·리믹스·핀 댓글(Studio 수동)",
+   "01 OWL LIFE 발행 완료(08-06 목 21:00, KZ3WCYlx11M)",
+   "전화 인증(youtube.com/verify) → 썸네일 재등록(403 해소)",
+   "03 컨셉 착수"
+  ],
+  "start": "2026-08-06",
+  "report": "주간 전략 08-24",
+  "reportUrl": "https://app.notion.com/p/2026-08-24-3c6748204dbd815fae2febdac94f9c6a"
+ },
+ {
+  "name": "PENGLIST",
+  "icon": "icons/brand/penglist.png",
+  "subs": 0,
+  "videos": 0,
+  "reserved": 0,
+  "target": 4,
+  "nextPub": "",
+  "scheduled": "",
+  "url": "https://app.notion.com/p/39f748204dbd8170ac7ec172fe05f45c",
+  "next": [
+   "첫 콘텐츠 컨셉 기획(edm-lyricist) · 슬롯 토 20:00",
+   "전화 인증 + 숙성 활동 이틀+ 선행"
+  ]
+ },
+ {
+  "name": "LAZE",
+  "icon": "icons/brand/laze.png",
+  "subs": 8,
+  "videos": 3,
+  "stage": "음원 연동 채널",
+  "scheduled": "Not Enough MV 07-19(일) 공개 — 싱글 발매일",
+  "url": "https://app.notion.com/p/38a748204dbd81ae9409e81e5930fc92",
+  "next": [
+   "싱글 발매: Not Enough·Ice on my hand·Ice on my neck 07-19 · Last Call 07-20"
+  ],
+  "start": "2026-07-10",
+  "report": "주간 전략 08-24",
+  "reportUrl": "https://app.notion.com/p/2026-08-24-3c6748204dbd815fae2febdac94f9c6a"
+ }
 ]

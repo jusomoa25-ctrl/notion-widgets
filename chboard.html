@@ -32,7 +32,7 @@
   .next{margin-top:5px}
   .next .lbl{font-weight:700;color:var(--todo);font-size:12px}
   .next ol{margin:2px 0 0;padding-left:17px;font-size:12.5px;line-height:1.45}
-  .next li{color:var(--fg)}
+  .next li{color:var(--fg);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .next .empty{color:var(--sub);font-size:12px}
 </style>
 </head>
@@ -64,7 +64,7 @@
           '</div>':'')+
           (b.scheduled?'<div class="r"><span class="k d">예약</span><span class="v">'+b.scheduled+'</span></div>':'')+
           '<div class="next"><div class="lbl">잔여 작업</div>'+
-            ((b.next&&b.next.length)?'<ol>'+b.next.map(function(n){return '<li>'+n+'</li>';}).join('')+'</ol>':'<div class="empty">—</div>')+
+            ((b.next&&b.next.length)?'<ol>'+b.next.slice(0,3).map(function(n){return '<li title="'+n.replace(/"/g,'&quot;')+'">'+n+'</li>';}).join('')+'</ol>':'<div class="empty">—</div>')+
           '</div>'+
         '</div>'+
       '</div>';
